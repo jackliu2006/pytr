@@ -12,20 +12,25 @@ api = login(phone_no=phoneNo,pin="0816")
 async def order_loop():
         recv = 0
 
-        await api.market_order(
-            isin="US0378331005",
-            exchange="LSX",
-            order_type="buy",
-            # limit=1000.0,
-            size=1.0,
-            expiry="gtd",
-            expiry_date="2023-11-13",
-            sell_fractions= True
-        )
-        recv += 1
-        # await api.order_overview()
-       
+        # await api.limit_order(
+        #     isin="US0378331005",
+        #     exchange="LSX",
+        #     order_type="buy",
+        #     limit=1.0,
+        #     size=1.0,
+        #     expiry="gtd",
+        #     expiry_date="2023-11-14",
+        #     # sell_fractions= False
+        # )
         # recv += 1
+        
+
+        await api.cancel_order( '35e14c34-dd56-4445-ab75-86037b8cf84d')
+        recv += 1
+
+        await api.order_overview()
+       
+        recv += 1
 
         while recv > 0:
             subscription_id, subscription, response = await api.recv()
