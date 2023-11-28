@@ -281,6 +281,9 @@ class TradeRepublicApi:
         self.log.info('Connected to websocket ...')
 
         return self._ws
+    
+    async def get_ws(self):
+        return await self._get_ws()
 
     async def _next_subscription_id(self):
         async with self._lock:
@@ -311,8 +314,8 @@ class TradeRepublicApi:
         self._previous_responses.pop(subscription_id, None)
 
     async def recv(self):
-        ws = await self._get_ws()
-        while True:
+            ws = await self._get_ws()
+        #while True:
             response = await ws.recv()
             self.log.debug(f'Received message: {response!r}')
 
@@ -323,7 +326,7 @@ class TradeRepublicApi:
             if subscription_id not in self.subscriptions:
                 if code != 'C':
                     self.log.debug(f'No active subscription for id {subscription_id}, dropping message')
-                continue
+                
             subscription = self.subscriptions[subscription_id]
 
             if code == 'A':
@@ -341,7 +344,6 @@ class TradeRepublicApi:
             if code == 'C':
                 self.subscriptions.pop(subscription_id, None)
                 self._previous_responses.pop(subscription_id, None)
-                continue
 
             elif code == 'E':
                 self.log.error(f'Received error message: {response!r}')
